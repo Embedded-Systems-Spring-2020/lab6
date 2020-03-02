@@ -26,11 +26,12 @@ typedef struct {
 	BOOL b_RPGMedium;
 	BOOL b_RPGSlow; 
 	BOOL b_RPGNotMoving;
-	uint16_t u16_RPGLastChangeMs;  //time of last RPGA change
-	uint16_t u16_RPGPeriodMs;      // time SINCE last RPGA change
-	uint16_t u16_RPGNotMovingToSlowPeriodMs;  //border between not moving and slow
-	uint16_t u16_RPGSlowToMediumPeriodMs;     //border between slow and medium
-	uint16_t u16_RPGMediumToFastPeriodMs;	  //border between medium and fast
+	uint32_t u32_RPGLastChangeMs;			// Last timestamp of RPG change
+	uint32_t u32_RPGNowChangeMs;			// Most recent timestamp of RPG change
+	uint32_t u32_RPGDiffChangeMs;			// Now - Last
+	uint16_t u16_RPGFastThreshold;	  		// Largest period that could be considered "fast" speed
+	uint16_t u16_RPGMediumThreshold; 		// Largest period that could be considered "medium" speed
+	uint16_t u16_RPGSlowThreshold;	 		// Largest period that could be considered "slow" speed
 	BOOL b_RPGCW;				//RPG clockwise rotation
 	BOOL b_RPGCCW;				//counter clockwise
 	int16_t i16_RPGCounter;      //notice signed int for counting CCW from start

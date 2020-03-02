@@ -499,6 +499,29 @@ ESOS_USER_TASK(__esos_uiF14_task) {
         _st_esos_uiF14Data.i16_RPGCounter -= 1;
       }
 
+      // esos_GetSystemTick()
+
+      // Speed Logic
+      if (_st_esos_uiF14Data.u32_RPGLastChangeMs != 0 && _st_esos_uiF14Data.u32_RPGNowChangeMs != 0) {
+        _st_esos_uiF14Data.u32_RPGNowChangeMs = esos_GetSystemTick();
+
+        _st_esos_uiF14Data.u32_RPGDiffChangeMs = _st_esos_uiF14Data.u32_RPGNowChangeMs - _st_esos_uiF14Data.u32_RPGLastChangeMs;
+
+        if (_st_esos_uiF14Data.u32_RPGDiffChangeMs < _st_esos_uiF14Data.u16_RPGFastThreshold) {
+          _st_esos_uiF14Data.b_RPGFast = TRUE;
+          _st_esos_uiF14Data.b_RPGMedium = FALSE;
+          _st_esos_uiF14Data.b_RPGSlow = FALSE;
+        } else if (_st_esos_uiF14Data.u32_RPGDiffChangeMs < _st_esos_uiF14Data.u16_RPGMediumThreshold) {
+          _st_esos_uiF14Data.b_RPGFast = FALSE;
+          _st_esos_uiF14Data.b_RPGMedium = TRUE;
+          _st_esos_uiF14Data.b_RPGSlow = FALSE;
+        } else if (_st_esos_uiF14Data.u32_RPGDiffChangeMs < _st_esos_uiF14Data.u16_RPGSlowThreshold) {
+          _st_esos_uiF14Data.b_RPGFast = FALSE;
+          _st_esos_uiF14Data.b_RPGMedium = FALSE;
+          _st_esos_uiF14Data.b_RPGSlow = TRUE;
+        }
+      }
+
     }
 
     ESOS_TASK_WAIT_TICKS(__ESOS_UIF14_UI_PERIOD_MS);
@@ -522,11 +545,12 @@ void config_esos_uiF14() {
   _st_esos_uiF14Data.b_RPGMedium = FALSE;
   _st_esos_uiF14Data.b_RPGSlow = FALSE;
   _st_esos_uiF14Data.b_RPGNotMoving = TRUE;
-  _st_esos_uiF14Data.u16_RPGLastChangeMs = 0; //time of last RPGA change
-  _st_esos_uiF14Data.u16_RPGPeriodMs = 0; // time SINCE last RPGA change
-  _st_esos_uiF14Data.u16_RPGNotMovingToSlowPeriodMs = 600; //border between not moving and slow
-  _st_esos_uiF14Data.u16_RPGSlowToMediumPeriodMs = 400;
-  _st_esos_uiF14Data.u16_RPGMediumToFastPeriodMs = 100;
+  _st_esos_uiF14Data.u32_RPGLastChangeMs = 0; //time of last RPGA change
+  _st_esos_uiF14Data.u32_RPGNowChangeMs = 0; // time SINCE last RPGA change
+  _st_esos_uiF14Data.u32_RPGDiffChangeMs = 0; // time SINCE last RPGA change
+  _st_esos_uiF14Data.u16_RPGFastThreshold = 50;
+  _st_esos_uiF14Data.u16_RPGMediumThreshold = 150;
+  _st_esos_uiF14Data.u16_RPGSlowThreshold = 300; //border between not moving and slow
   _st_esos_uiF14Data.b_RPGCW = FALSE;
   _st_esos_uiF14Data.b_RPGCCW = FALSE;
   _st_esos_uiF14Data.i16_RPGCounter = 0; // notice signed int for couting CCW from start
